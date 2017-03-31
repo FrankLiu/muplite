@@ -86,6 +86,36 @@ export function getDockerLogs(name, sessions, args) {
   return Promise.all(promises);
 }
 
+export function getPm2Logs(name, sessions) {
+  log(`getPm2Logs command: ${command}`);
+  var command = path.resolve(__dirname, 'mlite/assets/meteor-logs.sh');
+  let promises = _.map(sessions, session => {
+    const input = new Callback2Stream();
+    const host = '[' + session._host + ']';
+    const lineSeperator = readline.createInterface({
+      input,
+      terminal: true
+    });
+    lineSeperator.on('line', (data) => {
+      console.log(host + data);
+    });
+    const options = {
+      onStdout: data => {
+        input.addData(data);
+      },
+      onStderr: data => {
+        // the logs all come in on stdout so stderr isn't added to lineSeperator
+        process.stdout.write(host + data);
+      },
+      vars: {
+        name: name
+      }
+    };
+    return promisify(session.executeScript.bind(session))(command, options);
+  });
+  return Promise.all(promises);
+}
+
 // Maybe we should create a new npm package
 // for this one. Something like 'sshelljs'.
 export function runSSHCommand(info, command) {

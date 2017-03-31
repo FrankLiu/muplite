@@ -23,6 +23,11 @@ module.exports = {
       serverOnly: true,
     },
 
+    setup: {
+      mongo: false,
+      path: '/opt/work'
+    },
+
     env: {
       // TODO: Change to your app's url
       // If you are using ssl, it needs to start with https://

@@ -1,5 +1,6 @@
 import * as docker from '../docker/';
 import * as meteor from '../meteor/';
+import * as mlite from '../mlite/';
 import * as mongo from '../mongo/';
 
 import debug from 'debug';
